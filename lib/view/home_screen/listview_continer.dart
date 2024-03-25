@@ -8,11 +8,15 @@ class ListViewScreen extends StatelessWidget {
       required this.title,
       required this.desc,
       required this.date,
-      required this.colorindex});
+      required this.colorindex,
+      this.onDeletePres,
+      this.oneditPres});
   final String title;
   final String desc;
   final String date;
   final int colorindex;
+  final void Function()? onDeletePres;
+  final void Function()? oneditPres;
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +40,11 @@ class ListViewScreen extends StatelessWidget {
                 ),
               ),
               Spacer(),
-              Icon(Icons.edit),
+              InkWell(onTap: oneditPres, child: Icon(Icons.edit)),
               SizedBox(
                 width: 10,
               ),
-              Icon(Icons.delete)
+              InkWell(onTap: onDeletePres, child: Icon(Icons.delete))
             ],
           ),
           SizedBox(
