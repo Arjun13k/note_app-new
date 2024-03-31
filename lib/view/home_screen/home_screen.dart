@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:noteapp/controller/note_screen_controller.dart';
 import 'package:noteapp/core/colorconstant/colorconstant.dart';
 import 'package:noteapp/view/home_screen/listview_continer.dart';
@@ -33,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             ListView.separated(
+                physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemBuilder: (context, index) => ListViewScreen(
                       title: NoteScreenController.notesList[index]["title"],
@@ -121,13 +123,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 5,
               ),
               TextField(
+                readOnly: true,
                 controller: dateEditingController,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8)),
                     filled: true,
                     hintText: "Date",
-                    fillColor: ColorConstants.primaryGrey),
+                    fillColor: ColorConstants.primaryGrey,
+                    suffixIcon: InkWell(
+                        onTap: () async {
+                          final selectedDate = await showDatePicker(
+                              context: context,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(2030));
+                          if (selectedDate != null) {
+                            String formateDate =
+                                DateFormat("dd/MM/yyyy").format(selectedDate);
+                            dateEditingController.text = formateDate.toString();
+                          }
+
+                          setState(() {});
+                        },
+                        child: Icon(Icons.calendar_month))),
               ),
               SizedBox(
                 height: 10,
