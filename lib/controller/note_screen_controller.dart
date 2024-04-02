@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:noteapp/core/colorconstant/colorconstant.dart';
 
 class NoteScreenController {
-  static List notesList = [];
+  static List notesListKey = [];
 
   static List<Color> colorConstant = [
     ColorConstants.primaryBlue,
@@ -10,35 +11,38 @@ class NoteScreenController {
     ColorConstants.primaryRed,
     ColorConstants.primaryGrey
   ];
+  static getInitStateKey() {
+    notesListKey = myBox.keys.toList();
+  }
 
+//  hive reference
+  static var myBox = Hive.box('noteBox');
   //  to add single note
 
-  static void addNote({
+  static Future<void> addNote({
     required String title,
     required String des,
     required String date,
     required int colorIndex,
-  }) {
-    notesList.add(
+  }) async {
+    await myBox.add(
         {"title": title, "dis": des, "date": date, "colorIndex": colorIndex});
+    notesListKey = myBox.keys.toList();
   }
 
-  static void delete(int index) {
-    notesList.removeAt(index);
+  static Future<void> delete(var key) async {
+    await myBox.delete(key);
+    notesListKey = myBox.keys.toList();
   }
 
-  static void edit({
-    required int index,
+  static Future<void> edit({
+    required var key,
     required String title,
     required String des,
     required String date,
     required int colorIndex,
-  }) {
-    notesList[index] = {
-      "title": title,
-      "dis": des,
-      "date": date,
-      "colorIndex": colorIndex
-    };
+  }) async {
+    await myBox.put(key,
+        {"title": title, "dis": des, "date": date, "colorIndex": colorIndex});
   }
 }

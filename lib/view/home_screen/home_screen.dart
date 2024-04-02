@@ -18,6 +18,12 @@ int selectedColorIndex = 0;
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    NoteScreenController.getInitStateKey();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstants.primaryBlack,
@@ -36,33 +42,33 @@ class _HomeScreenState extends State<HomeScreen> {
             ListView.separated(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemBuilder: (context, index) => ListViewScreen(
-                      title: NoteScreenController.notesList[index]["title"],
-                      desc: NoteScreenController.notesList[index]["dis"],
-                      date: NoteScreenController.notesList[index]["date"],
-                      colorindex: NoteScreenController.notesList[index]
-                          ["colorIndex"],
-                      onDeletePres: () {
-                        NoteScreenController.delete(index);
-                        setState(() {});
-                      },
-                      oneditPres: () {
-                        titleEditingController.text =
-                            NoteScreenController.notesList[index]["title"];
-                        desEditingController.text =
-                            NoteScreenController.notesList[index]["dis"];
-                        dateEditingController.text =
-                            NoteScreenController.notesList[index]["date"];
-                        selectedColorIndex =
-                            NoteScreenController.notesList[index]["colorIndex"];
+                itemBuilder: (context, index) {
+                  final currentKey = NoteScreenController.notesListKey[index];
+                  final currentElement =
+                      NoteScreenController.myBox.get(currentKey);
+                  return ListViewScreen(
+                    title: currentElement["title"],
+                    desc: currentElement["dis"],
+                    date: currentElement["date"],
+                    colorindex: currentElement["colorIndex"],
+                    onDeletePres: () {
+                      NoteScreenController.delete(currentKey);
+                      setState(() {});
+                    },
+                    oneditPres: () {
+                      titleEditingController.text = currentElement["title"];
+                      desEditingController.text = currentElement["dis"];
+                      dateEditingController.text = currentElement["date"];
+                      selectedColorIndex = currentElement["colorIndex"];
 
-                        customBottomSheet(isEdit: true, index: index);
-                      },
-                    ),
+                      customBottomSheet(isEdit: true, key: currentKey);
+                    },
+                  );
+                },
                 separatorBuilder: (context, index) => SizedBox(
                       height: 10,
                     ),
-                itemCount: NoteScreenController.notesList.length)
+                itemCount: NoteScreenController.notesListKey.length)
             // Container(
             //   child: Column(
             //     children: [],
@@ -84,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<dynamic> customBottomSheet({int index = 0, isEdit = false}) {
+  Future<dynamic> customBottomSheet({var key = 0, isEdit = false}) {
     return showModalBottomSheet(
       backgroundColor: ColorConstants.primaryGrey.withOpacity(.8),
       isScrollControlled: true,
@@ -180,14 +186,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   InkWell(
-                    onTap: () {
+                    onTap: () async {
                       setState(() {});
                       // textEditingController.text.toString();
                       // print(textEditingController.text.toString());
 
                       if (isEdit == true) {
-                        NoteScreenController.edit(
-                            index: index,
+                        await NoteScreenController.edit(
+                            key: key,
                             title: titleEditingController.text,
                             date: dateEditingController.text,
                             des: desEditingController.text,

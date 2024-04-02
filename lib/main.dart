@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:noteapp/view/home_screen/home_screen.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:noteapp/view/splash_screen/splash_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  var box = await Hive.openBox('noteBox');
   runApp(NoteApp());
 }
 
