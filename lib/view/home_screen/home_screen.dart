@@ -26,55 +26,58 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstants.primaryBlack,
+      // backgroundColor: ColorConstants.primaryBlack,
       appBar: AppBar(
-        backgroundColor: ColorConstants.primaryBlack,
+        // backgroundColor: ColorConstants.primaryBlack,
         centerTitle: true,
         title: Text(
           "PENPAD",
           style: TextStyle(
-              fontWeight: FontWeight.bold, color: ColorConstants.primaryWhite),
+              fontWeight: FontWeight.bold, color: ColorConstants.primaryBlack),
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ListView.separated(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  final currentKey = NoteScreenController.notesListKey[index];
-                  final currentElement =
-                      NoteScreenController.myBox.get(currentKey);
-                  return ListViewScreen(
-                    title: currentElement["title"],
-                    desc: currentElement["dis"],
-                    date: currentElement["date"],
-                    colorindex: currentElement["colorIndex"],
-                    onDeletePres: () {
-                      NoteScreenController.delete(currentKey);
-                      setState(() {});
-                    },
-                    oneditPres: () {
-                      titleEditingController.text = currentElement["title"];
-                      desEditingController.text = currentElement["dis"];
-                      dateEditingController.text = currentElement["date"];
-                      selectedColorIndex = currentElement["colorIndex"];
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              ListView.separated(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final currentKey = NoteScreenController.notesListKey[index];
+                    final currentElement =
+                        NoteScreenController.myBox.get(currentKey);
+                    return ListViewScreen(
+                      title: currentElement["title"],
+                      desc: currentElement["dis"],
+                      date: currentElement["date"],
+                      colorindex: currentElement["colorIndex"],
+                      onDeletePres: () {
+                        NoteScreenController.delete(currentKey);
+                        setState(() {});
+                      },
+                      oneditPres: () {
+                        titleEditingController.text = currentElement["title"];
+                        desEditingController.text = currentElement["dis"];
+                        dateEditingController.text = currentElement["date"];
+                        selectedColorIndex = currentElement["colorIndex"];
 
-                      customBottomSheet(isEdit: true, key: currentKey);
-                    },
-                  );
-                },
-                separatorBuilder: (context, index) => SizedBox(
-                      height: 10,
-                    ),
-                itemCount: NoteScreenController.notesListKey.length)
-            // Container(
-            //   child: Column(
-            //     children: [],
-            //   ),
-            // )
-          ],
+                        customBottomSheet(isEdit: true, key: currentKey);
+                      },
+                    );
+                  },
+                  separatorBuilder: (context, index) => SizedBox(
+                        height: 10,
+                      ),
+                  itemCount: NoteScreenController.notesListKey.length)
+              // Container(
+              //   child: Column(
+              //     children: [],
+              //   ),
+              // )
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
